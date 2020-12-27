@@ -1,0 +1,26 @@
+{
+    "name": "吴晴",
+    "material": "WuQing.png",
+    "part": "WuQing.png",
+    "whole": "WuQing.png",
+    "profession": "剑士",
+    "ability": {
+        "atk": 50,
+        "def": 50,
+        "str": 50,
+        "dex": 50,
+        "con": 50,
+        "int": 50
+    },
+    "grow": {
+        "atk": 50
+    },
+    "skill": [
+        {
+            "level" : 1,
+            "name" : "斩",
+            "introduce": ""
+        }
+    ],
+    "introduce": ""
+}
