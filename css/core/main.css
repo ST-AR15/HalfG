@@ -1,0 +1,33 @@
+* {
+    margin: 0;
+    padding: 0;
+    user-select: none;
+}
+body {
+    background-color: #000000;
+}
+.container {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.game {
+    margin: 0.5vmin auto;
+    height: 99vmin;
+    width: 176vmin;   /* 16:9 */
+    position: relative;
+}
+.map {
+    position: absolute;
+    min-width: 176vmin;
+    min-height: 99vmin;
+    top: 0;
+    left: 0;
+}
+.blank {
+    width: 9vmin;
+    height: 9vmin;
+    position: absolute;
+}

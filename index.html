@@ -3,16 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HalfG - 半神</title>
+    <title>HalfG - 契约者</title>
+    <link rel="stylesheet" href="css/core/main.css">
     <script src="js/core/vue.min.js"></script>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="container">
         <div class="game">
-            <div class="map"></div>
+            <div class="map">
+                <template v-for="data in map">
+                    <div class="blank" v-bind:style="{
+                        left: (data.placeX-1) * blankWidth + 'vmin',
+                        top: (data.placeY-1) * blankWidth + 'vmin',
+                        backgroundImage: 'url(img/material/terrain/' + data.model.file + ')',
+                        backgroundPosition: (data.model.fileX-1)*(-blankWidth) + 'vmin' + ' ' + (data.model.fileY-1)*(-blankWidth) + 'vmin',
+                        backgroundSize: (data.model.fileMaxLength*100) + '%'
+                    }">
+
+                    </div>
+                </template>
+            </div>
             <div class="interactive"></div>
         </div>
         <div class="controller"></div>
     </div>
+    <script src="js/core/core.js"></script>
 </body>
 </html>
