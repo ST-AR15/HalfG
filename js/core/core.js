@@ -1,100 +1,137 @@
 let vm = new Vue({
     el: '#container',
     data: {
-        blankWidth: 9,   // 没个方块的宽高,单位vmin
-        character: {
-            placeX: 15,        // 角色的X坐标
-            placeY: 15,        // 角色的Y坐标
-            model: "main.png", // 角色的贴图文件名（这些图片都在img/material/people里）
-        },
-        map: [  // map是地形
-            {
-                placeX: 1,  // 贴图的X坐标
-                placeY: 1,  // 贴图的Y坐标
-                model: {    // 模型信息
-                    file: "floor.png",  // 模型文件（这些图片都在img/material/terrain里）
-                    fileX: 3,  // 贴图横向第几块
-                    fileY: 13,  // 贴图纵向第几块
-                    fileMaxLength: 16, // 贴图长的那边有多少个图。通过这个来截取
-                },
-                isMove: true, // 角色是否可以移动在这里（只考虑地图。因为如果这里放了别的东西阻止移动会写在那个地方）
-                // Fun 传入角色在这块上可以触发的函数
-            },
-            {
-                placeX: 2,
-                placeY: 1,
-                model: {
-                    file: "floor.png",
-                    fileX: 4,
-                    fileY: 13,
-                    fileMaxLength: 16,
-                },
-            },
-            {
-                placeX: 3,
-                placeY: 1,
-                model: {
-                    file: "floor.png",
-                    fileX: 3,
-                    fileY: 13,
-                    fileMaxLength: 16,
-                },
-            },
-            {
-                placeX: 4,
-                placeY: 1,
-                model: {
-                    file: "floor.png",
-                    fileX: 4,
-                    fileY: 13,
-                    fileMaxLength: 16,
-                },
-            },
-            {
-                placeX: 5,
-                placeY: 1,
-                model: {
-                    file: "floor.png",
-                    fileX: 3,
-                    fileY: 13,
-                    fileMaxLength: 16,
-                },
-            },
-            {
-                placeX: 6,
-                placeY: 1,
-                model: {
-                    file: "floor.png",
-                    fileX: 4,
-                    fileY: 13,
-                    fileMaxLength: 16,
-                },
-            },
-            {
-                placeX: 7,
-                placeY: 1,
-                model: {
-                    file: "floor.png",
-                    fileX: 3,
-                    fileY: 13,
-                    fileMaxLength: 16,
-                },
-            },
-        ],
-        interactive: [ // interactive是可交互地点，这些地方的地形不能移动
-            {
-                placeX: 1,
-                placeY: 1,
-                model: {
-                    file: "people/WuQing.png", // 模型文件（这些图片都在img/material里，可能会在不同文件夹)
-                    fileX: 1,
-                    fileY: 1,
-                },
-                Fun: "",  // 交互后执行的函数
+        gameW: 1000,  // 游戏所在div的宽度
+        gameH: 800,   // 游戏所在div的高度
+        mapW: 120,     // 游戏地图每一格的宽度像素
+        modelUrl: 'img/material/terrain', // 模型文件位置
+        model: {
+            normalFloor: {
+                file: "floor.png", // 模型图片名
+                fileX: 1,          // 使用的那块是横向第几个
+                fileY: 1,        // 使用的那块是纵向第几个
+                fileLength: 8,     // 宽度上有多少个方块，通过这个来计算截取
             }
-        ],
+        },
+        map: {
+            
+        },
+        player: {
+            placeX: 1,
+            placeY: 1,
+            file: 'img/material/people/main.png',
+            playerStatus: 1,
+            playerAniStatus: 2,
+            isMove: true,
+            time: 0,
+        }
     },
     methods: {
+        // TODO 这个初始化地图应该可以有更多的选项
+        /**
+         * 创建地图
+         * @param {String} name 地图名字
+         * @param {Number} width 地图宽度（格子数量）
+         * @param {Number} height 地图高度（格子数量）
+         * @param {Object} model 地图每一格的材质
+         */
+        createMap(name, width, height, model) {
+            // 数据正确性判断
+            if(arguments.length != 4) {
+                throw '请传入正确数量的参数！';
+            }
+            if(this.map[name]) {
+                throw '请不要创建一个已经存在的地图！如果需要修改该地图信息，请调用updateMap()'
+            }
+            if(!(typeof (model) == 'object' && Object.prototype.toString.call(model).toLowerCase() == "[object object]")) {
+                throw '请传入Object的model属性，它应该有file、fileX、fileY、fileLength四个值。您可以通过createModel方法来创建属性，然后在this.data.model里找到它。'
+            }
+            // 创建地图
+            let map = [];
+            for(let i = 0; i < width*height; i++) {
+                map.push({
+                    placeX: (i % width) + 1,
+                    placeY: Math.floor(i / width) + 1,
+                    model: model,
+                    isMove: true,
+                })
+            }
+            // this.map[name] = map;
+            Vue.set(this.map, name, map);
+            // this.$forceUpdate();
+        },
+        // TODO
+        updateMap() {
+            return ;
+        },
+        // TODO
+        createModel() {
+            return ;
+        },
+        // TODO 缺少障碍物检测
+        playerMove(direction, time) {
+            // 只有在可移动的情况下才能移动
+            if(this.player.isMove) {
+                this.player.time = time;
+                this.player.isMove = false;
+                if(direction == 'left') {
+                    this.player.playerStatus = 2;
+                    this.player.placeX--;
+                    console.log('开始往左走');
+                }
+                else if(direction == 'right') {
+                    this.player.playerStatus = 3;
+                    this.player.placeX++;
+                    console.log('开始往右走');
+                }
+                else if(direction == 'up') {
+                    this.player.playerStatus = 4;
+                    this.player.placeY--;
+                    console.log('开始往上走');
+                }
+                else if(direction == 'down') {
+                    this.player.playerStatus = 1;
+                    this.player.placeY++;
+                    console.log('开始往下走');
+                }
+                // else {
+                //     throw '请输入正确的方向！正确的输入应该为left, right, up和down四个中的一个'
+                // }
+                let that = this;
+                setTimeout(() => {
+                    that.player.playerAniStatus = 1;
+                }, time/4);
+                setTimeout(() => {
+                    that.player.playerAniStatus = 2;
+                }, time*2/4);
+                setTimeout(() => {
+                    that.player.playerAniStatus = 3;
+                }, time*3/4);
+                setTimeout(() => {
+                    that.player.playerAniStatus = 2;
+                    that.player.isMove = true;
+                    console.log('走完了')
+                }, time);
+            }
+        }
+    },
+    mounted() {
+        let that = this;
+        this.createMap('test', 10, 10, this.model.normalFloor);
+        window.onkeydown = function(e) {
+            if(e.keyCode == 37) {
+                that.playerMove('left', 300);
+            }
+            if(e.keyCode == 38) {
+                that.playerMove('up', 300);
+            }
+            if(e.keyCode == 39) {
+                that.playerMove('right', 300);
+            }
+            if(e.keyCode == 40) {
+                that.playerMove('down', 300);
+            }
+        }
 
     }
 })

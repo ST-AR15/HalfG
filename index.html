@@ -8,20 +8,33 @@
     <script src="js/core/vue.min.js"></script>
 </head>
 <body>
-    <div class="container" id="container">
+    <div class="container" id="container" :style="{
+        width: gameW + 'px',
+        height: gameH + 'px',
+    }">
         <div class="game">
             <div class="map">
-                <template v-for="data in map">
-                    <div class="blank" v-bind:style="{
-                        left: (data.placeX-1) * blankWidth + 'vmin',
-                        top: (data.placeY-1) * blankWidth + 'vmin',
-                        backgroundImage: 'url(img/material/terrain/' + data.model.file + ')',
-                        backgroundPosition: (data.model.fileX-1)*(-blankWidth) + 'vmin' + ' ' + (data.model.fileY-1)*(-blankWidth) + 'vmin',
-                        backgroundSize: (data.model.fileMaxLength*100) + '%'
+                <template v-for="data in map.test">
+                    <div class="blank" :style="{
+                        width: mapW + 'px',
+                        height: mapW + 'px',
+                        left: (data.placeX-1) * mapW + 'px',
+                        top: (data.placeY-1) * mapW + 'px',
+                        backgroundImage: 'url(' + modelUrl + '/' + data.model.file + ')',
+                        backgroundPosition: (data.model.fileX-1)*(-mapW) + 'px' + ' ' + (data.model.fileY-1)*(-mapW) + 'px',
+                        backgroundSize: (data.model.fileLength*100) + '%'
                     }">
-
                     </div>
                 </template>
+                <div class="person" :style="{
+                    width: mapW + 'px',
+                    height: mapW + 'px',
+                    left: (player.placeX-1) * mapW + 'px',
+                    top: (player.placeY-1) * mapW + 'px',
+                    backgroundPosition: (player.playerAniStatus-1)*(-mapW) + 'px' + ' ' + (player.playerStatus-1)*(-mapW) + 'px',
+                    backgroundImage: 'url(' + player.file + ')',
+                    transitionDuration: player.time + 'ms'
+                }"></div>
             </div>
             <div class="interactive"></div>
         </div>

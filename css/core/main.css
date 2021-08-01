@@ -7,11 +7,10 @@ body {
     background-color: #000000;
 }
 .container {
-    width: 100vw;
-    height: 100vh;
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 100px;
+    left: 100px;
+    overflow: hidden;
 }
 .game {
     margin: 0.5vmin auto;
@@ -25,9 +24,13 @@ body {
     min-height: 99vmin;
     top: 0;
     left: 0;
+    border: 10px solid #d45555;
 }
-.blank {
-    width: 9vmin;
-    height: 9vmin;
+.map > div {
     position: absolute;
+}
+.person {
+    background-size: 300%;
+    transition-timing-function: linear;
+    transition-property: left, top;
 }
