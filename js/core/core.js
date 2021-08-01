@@ -5,7 +5,7 @@ let vm = new Vue({
         gameH: 800,   // 游戏所在div的高度
         mapW: 120,     // 游戏地图每一格的宽度像素
         modelUrl: 'img/material/terrain', // 模型文件位置
-        model: {
+        mapping: {
             normalFloor: {
                 file: "floor.png", // 模型图片名
                 fileX: 1,          // 使用的那块是横向第几个
@@ -13,6 +13,8 @@ let vm = new Vue({
                 fileLength: 8,     // 宽度上有多少个方块，通过这个来计算截取
             }
         },
+        role: {},
+        objectItem: {},
         map: {
             
         },
@@ -57,7 +59,14 @@ let vm = new Vue({
                 })
             }
             // this.map[name] = map;
-            Vue.set(this.map, name, map);
+            let info = {
+                detail: map,
+                info: {
+                    x: width,
+                    y: height
+                }
+            }
+            Vue.set(this.map, name, info);
             // this.$forceUpdate();
         },
         // TODO
@@ -68,7 +77,12 @@ let vm = new Vue({
         createModel() {
             return ;
         },
-        // TODO 缺少障碍物检测
+        // TODO 缺少障碍物检测，地图的移动
+        /**
+         * 控制角色移动
+         * @param {String} direction 角色的移动方向，有left，right，up，down四个选项
+         * @param {Number} time 完成本次移动的时间（单位毫秒）
+         */
         playerMove(direction, time) {
             // 只有在可移动的情况下才能移动
             if(this.player.isMove) {
@@ -97,6 +111,7 @@ let vm = new Vue({
                 // else {
                 //     throw '请输入正确的方向！正确的输入应该为left, right, up和down四个中的一个'
                 // }
+                // 角色动作
                 let that = this;
                 setTimeout(() => {
                     that.player.playerAniStatus = 1;
@@ -113,11 +128,21 @@ let vm = new Vue({
                     console.log('走完了')
                 }, time);
             }
+        },
+        createObject(map, x, y, model) {
+            if(!this.map[map]) {
+                throw '该地图不存在，您可以先试用createMap()方法创建一个地图';
+            }
+            if(this.map[map].info.x < x || this.map[map].info.y < y) {
+                throw '您选择的点位超出了地图范围！请修改x或者y保证地点合理';
+            }
+            
+            
         }
     },
     mounted() {
         let that = this;
-        this.createMap('test', 10, 10, this.model.normalFloor);
+        this.createMap('test', 10, 10, this.mapping.normalFloor);
         window.onkeydown = function(e) {
             if(e.keyCode == 37) {
                 that.playerMove('left', 300);
